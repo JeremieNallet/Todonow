@@ -1,0 +1,41 @@
+.timer-settings {
+    background: white;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+    border-radius: 2rem;
+    @include flex-centered(column);
+
+    &__group {
+        width: 67%;
+        margin-top: 2rem;
+
+        .container {
+            width: 100%;
+            padding: 2rem 0;
+        }
+
+        &--text {
+            font-size: 1.6rem;
+            font-weight: 400;
+            padding: 1rem 0;
+            align-self: flex-start;
+            width: 100%;
+            > span {
+                float: right;
+            }
+        }
+        &--sliders {
+            width: 100%;
+        }
+    }
+    &__save-btn {
+        padding: 1rem 0;
+
+        button {
+            margin: 1rem 0;
+        }
+    }
+}

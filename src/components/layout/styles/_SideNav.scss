@@ -1,0 +1,87 @@
+.sidenav-container {
+    width: 20rem;
+    height: 100vh;
+    background: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 25vh 0 7rem 0;
+    position: fixed;
+    overflow: scroll;
+    z-index: 2;
+
+    &.fixed-copy {
+        width: 20rem;
+    }
+    &.fixed-copy .sidenav__link--title {
+        display: flex;
+    }
+
+    @include media(l) {
+        width: 8rem;
+    }
+    @include media(s) {
+        width: 0;
+    }
+
+    &__bottom {
+        button {
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+    }
+    .sidenav {
+        &__list-item {
+            padding-left: 0.1rem;
+        }
+        &__link {
+            display: flex;
+            align-items: center;
+            padding: 3rem 0;
+            width: 100%;
+            color: rgb(102, 102, 102);
+            font-size: 1.45rem;
+            font-weight: 400;
+            position: relative;
+
+            &.active {
+                background: #ffffff18;
+                border-bottom-left-radius: 5rem;
+                border-top-left-radius: 5rem;
+                color: var(--primary-color);
+                font-weight: 500;
+            }
+            &.active .sidenav__link--title {
+                color: white;
+            }
+            &.active .sidenav__link--icon {
+                stroke: white;
+            }
+            &--icon {
+                stroke: rgba(255, 255, 255, 0.521);
+                margin: 0rem 3rem;
+                width: 2.4rem;
+                height: 2.4rem;
+                &.solid {
+                    stroke: white;
+                }
+                @include media(l) {
+                    margin: 0rem 2.5rem;
+                }
+            }
+            &--title {
+                font-size: 1.5rem;
+                color: rgba(255, 255, 255, 0.521);
+                font-weight: 500;
+                &.solid {
+                    color: white;
+                }
+
+                @include media(l) {
+                    display: none;
+                }
+            }
+        }
+    }
+}

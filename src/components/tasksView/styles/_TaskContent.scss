@@ -1,0 +1,42 @@
+.task-content {
+    flex: 1;
+    display: flex;
+    max-width: 85%;
+    &__selector {
+        margin-right: 4rem;
+        &--shape {
+            display: block;
+            height: 1.8rem;
+            width: 1.8rem;
+            background: none;
+            border: 1px solid rgb(202, 202, 202);
+            border-radius: 50%;
+            margin-top: 0.2rem;
+            transition: 0.3s;
+            cursor: pointer;
+            &.active {
+                background: var(--color-yellow);
+                border: none;
+            }
+        }
+    }
+    &__text {
+        &--title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+
+            &.completed {
+                text-decoration: line-through;
+            }
+        }
+        &--body {
+            font-size: 1.5rem;
+            font-weight: 400;
+
+            &.active {
+                color: white;
+            }
+        }
+    }
+}

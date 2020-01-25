@@ -1,0 +1,57 @@
+$gutter: 3.2rem;
+$res: 170rem;
+$right-margin: 6rem;
+$left-margin: 26rem;
+
+.page-layout {
+    max-width: $res;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    padding: 10rem $right-margin 0 $left-margin;
+
+    @include media(l) {
+        padding: 10rem $right-margin / 1.6 0 $left-margin / 2.2;
+    }
+    @include media(s) {
+        padding: 10rem $right-margin / 9 0 $left-margin / 15;
+    }
+
+    &__header {
+        height: 20rem;
+        margin-bottom: $gutter * 2;
+        @media only screen and (max-width: 1200px) {
+            margin-bottom: $gutter;
+        }
+    }
+    &__column {
+        display: flex;
+        justify-content: center;
+        @media only screen and (max-width: 1024px) {
+            flex-direction: column;
+        }
+        &__left,
+        &__right {
+            flex: 1;
+        }
+        &__left {
+            padding-right: $gutter;
+
+            opacity: 0.8;
+            @include media(l) {
+                padding-right: $gutter / 2.5;
+            }
+            @include media(m) {
+                order: 2;
+                padding: 0;
+            }
+        }
+        &__right {
+            padding-left: $gutter;
+            @include media(m) {
+                order: 1;
+                padding: 0;
+            }
+        }
+    }
+}

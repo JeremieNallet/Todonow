@@ -1,0 +1,42 @@
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+
+    &__text {
+        font-weight: 800;
+        font-size: 2rem;
+    }
+    &__button {
+        border-radius: 50%;
+        padding: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+
+        &:hover {
+            transform: scale(0.96);
+            filter: brightness(105%);
+        }
+
+        &.add {
+            background: var(--color-yellow);
+        }
+        &.delete {
+            background: var(--color-red);
+        }
+        &--icon {
+            display: block;
+            stroke: white;
+            transition: 0.3s;
+
+            &.active {
+                transform: rotate(45deg);
+            }
+        }
+    }
+}

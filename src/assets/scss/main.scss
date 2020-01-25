@@ -1,0 +1,47 @@
+//fonts
+@import url('https://fonts.googleapis.com/css?family=Heebo:300,400,500,700&display=swap');
+
+// Base + Abstract
+@import './variables';
+@import './mixins';
+@import './base';
+@import './animation';
+
+//Auth
+@import '../../components/auth/styles/AuthForms';
+@import '../../components/auth/styles/AuthLanding';
+
+//Tasks
+
+@import '../../components/tasksView/styles/Tasks';
+@import '../../components/tasksView/styles/TaskAddForm';
+@import '../../components/tasksView/styles/TaskEditForm';
+@import '../../components/tasksView/styles/TaskHeader';
+@import '../../components/tasksView/styles/TaskItem';
+@import '../../components/tasksView/styles/TaskMenuBtn';
+@import '../../components/tasksView/styles/TaskSkeleton';
+@import '../../components/tasksView/styles/TaskContent';
+
+//Timer
+@import '../../components/timerView/styles/Timer';
+@import '../../components/timerView/styles/TimerControls';
+@import '../../components/timerView/styles/TimerCountDown';
+@import '../../components/timerView/styles/TimerHeader';
+@import '../../components/timerView/styles/TimerModal';
+@import '../../components/timerView/styles/TimerSettings';
+
+//Statistics
+
+@import '../../components/satisticsView/styles/StatisticsHeader';
+@import '../../components/satisticsView/styles/StatisticsState';
+@import '../../components/satisticsView/styles/StatisticsTime';
+
+//layout
+@import '../../components/layout/styles/ComfirmModal';
+@import '../../components/layout/styles/Header';
+@import '../../components/layout/styles/SideNav';
+@import '../../components/layout/styles/Inputs';
+@import '../../components/layout/styles/AuthLayout';
+@import '../../components/layout/styles/PageLayout';
+@import '../../components/layout/styles/FallbackLoader';
+@import '../../components/layout/styles/ScreenModal';

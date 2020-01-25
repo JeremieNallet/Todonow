@@ -1,0 +1,23 @@
+.task-skeleton {
+    &__cell {
+        height: 17.5rem;
+        background: white;
+        margin: 4% 0;
+        display: flex;
+        flex-direction: column;
+        box-shadow: var(--box-shadow);
+        border-radius: 2rem;
+        justify-content: center;
+        padding-left: 2vw;
+        &--stripe {
+            width: 60%;
+            height: 2rem;
+            margin: 1rem;
+            background: rgb(243, 243, 243);
+            border-radius: 0.5rem;
+            &:first-child {
+                width: 20%;
+            }
+        }
+    }
+}

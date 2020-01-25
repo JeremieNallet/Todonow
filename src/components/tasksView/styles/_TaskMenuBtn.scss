@@ -1,0 +1,47 @@
+.task-menu-btn {
+    height: fit-content;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    &__delete-icon {
+        fill: none !important;
+        stroke: rgb(192, 192, 192);
+        background: none;
+    }
+
+    &__options {
+        display: flex;
+        flex-direction: column;
+        width: fit-content;
+        border-radius: 1rem;
+        background: white;
+        box-shadow: 0px 1px 5px 2px rgba(0, 0, 0, 0.096);
+        padding: 1rem 0rem;
+        position: absolute;
+        top: 3rem;
+        right: 7rem;
+        display: none;
+
+        > span {
+            font-size: 1.5rem;
+            padding: 0.5rem 3rem;
+            text-align: left;
+            cursor: pointer;
+            &:hover {
+                background: rgb(228, 228, 228);
+            }
+        }
+    }
+
+    svg {
+        fill: rgb(187, 187, 187);
+        &:hover {
+            fill: var(--color-black);
+        }
+    }
+    &:focus .task-menu-btn__options {
+        display: flex;
+        fill: var(--color-black);
+    }
+}

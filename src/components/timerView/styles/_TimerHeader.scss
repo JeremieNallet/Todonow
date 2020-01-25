@@ -1,0 +1,35 @@
+.timer-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4rem;
+
+    &__text {
+        font-weight: 800;
+        font-size: 2rem;
+    }
+    &__button {
+        padding: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+        background: none;
+
+        &--icon {
+            display: block;
+            stroke: rgb(177, 177, 177);
+            transition: 0.3s;
+            &.open {
+                pointer-events: none;
+                opacity: 0.5;
+            }
+
+            &.active {
+                transform: rotate(45deg);
+            }
+        }
+    }
+}

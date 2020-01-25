@@ -1,0 +1,33 @@
+.task-edit-form {
+    background: white;
+    border-radius: 2rem;
+    padding: 3rem 6rem;
+
+    &--input {
+        height: 4rem;
+    }
+    &--textarea {
+        font-size: 1.6rem;
+        padding: 1rem;
+        text-indent: 1rem;
+        max-height: 20rem;
+        min-height: 15rem;
+        width: 100%;
+        resize: vertical;
+        border: 1px solid rgb(221, 221, 221);
+        border-radius: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    &__btn-group {
+        display: flex;
+        width: 100%;
+        text-align: right;
+
+        justify-content: flex-end;
+        &--item {
+            width: 30%;
+            margin: 0 0.3rem;
+        }
+    }
+}

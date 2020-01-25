@@ -1,0 +1,22 @@
+.tasks {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    @include media(m) {
+        height: 100%;
+    }
+
+    &__head {
+        height: fit-content;
+    }
+
+    &__list {
+        height: 100%;
+        margin-top: 1.5rem;
+
+        @include media(m) {
+            overflow: initial;
+        }
+    }
+}

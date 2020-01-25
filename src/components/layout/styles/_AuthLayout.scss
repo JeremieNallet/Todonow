@@ -1,0 +1,44 @@
+.auth-layout {
+    background: rgb(250, 252, 252);
+    display: flex;
+    @include media(m) {
+        flex-direction: column;
+    }
+
+    &__img {
+        flex: 1;
+        background: var(--auth-background);
+        &--container {
+            min-height: 100vh;
+            @include flex-centered(row);
+        }
+        @include media(m) {
+            display: none;
+        }
+        .svg-img {
+            height: auto;
+            max-width: 80%;
+        }
+    }
+    &__form {
+        flex: 1;
+        @include media(m) {
+            flex: initial;
+            padding-top: 7rem;
+            height: 100vh;
+        }
+        &--container {
+            margin: auto;
+            padding: 0 6rem;
+            max-width: 65rem;
+            min-height: 100vh;
+            @include flex-centered(row);
+            @include media(m) {
+                min-height: 100%;
+            }
+            @include media(xs) {
+                padding: 0;
+            }
+        }
+    }
+}

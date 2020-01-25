@@ -1,0 +1,39 @@
+@mixin flex-centered($direction) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: $direction;
+}
+
+@mixin media($breakpoint) {
+    @if $breakpoint == xl {
+        @media screen and (min-width: 2100px) {
+            @content;
+        }
+    }
+    @if $breakpoint == l-global {
+        @media screen and (max-width: 1460px) {
+            @content;
+        }
+    }
+    @if $breakpoint == l {
+        @media screen and (max-width: 1200px) {
+            @content;
+        }
+    }
+    @if $breakpoint == m {
+        @media screen and (max-width: 1024px) {
+            @content;
+        }
+    }
+    @if $breakpoint == s {
+        @media screen and (max-width: 600px) {
+            @content;
+        }
+    }
+    @if $breakpoint == xs {
+        @media screen and (max-width: 450px) {
+            @content;
+        }
+    }
+}

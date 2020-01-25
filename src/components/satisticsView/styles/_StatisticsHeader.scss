@@ -1,0 +1,39 @@
+.stats-header {
+    height: 100%;
+    background: #551fc118;
+    display: flex;
+    border-radius: 1rem;
+
+    &__text {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding-left: 5rem;
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+
+        @include media(xs) {
+            padding-left: 3.5rem;
+            font-size: 2.7rem;
+        }
+    }
+    &__img {
+        flex: 1;
+        @media screen and (max-width: 777px) {
+            display: none;
+            flex: initial;
+        }
+
+        @include flex-centered(row);
+        &--svg {
+            width: 60rem;
+            height: 100%;
+            @include media(m) {
+                width: 37rem;
+            }
+        }
+    }
+}

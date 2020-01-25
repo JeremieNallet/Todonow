@@ -1,0 +1,40 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0rem;
+    box-sizing: inherit;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+body {
+    box-sizing: border-box;
+    font-size: 1.6rem;
+    font-family: var(--font);
+    color: var(--color-black);
+    background: var(--body-background);
+    font-weight: 400;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+    font-size: 62.5%;
+    @include media(xl) {
+        font-size: 77%;
+    }
+    @include media(l-global) {
+        font-size: 56%;
+    }
+    @include media(l) {
+        font-size: 54%;
+    }
+}
+
+a {
+    text-decoration: none;
+}
+ul {
+    list-style: none;
+}

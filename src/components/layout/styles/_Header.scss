@@ -1,0 +1,52 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+    height: 7.5rem;
+    z-index: 9;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-right: 4.2rem;
+
+    &__left {
+        width: 20rem;
+        @include flex-centered(row);
+        @include media(l) {
+            width: 8rem;
+        }
+
+        &--logo {
+            @include flex-centered(row);
+            height: 100%;
+            font-weight: 800;
+            color: white;
+            position: relative;
+            @include media(l) {
+                display: none;
+            }
+            &:after {
+                content: '';
+                background: var(--color-yellow);
+                width: 1.5rem;
+                height: 1.5rem;
+                border-radius: 50%;
+                position: absolute;
+                left: -2.5rem;
+            }
+        }
+        &--icon {
+            display: none;
+            @include media(l) {
+                display: flex;
+            }
+        }
+    }
+    &__right {
+        &--gh-link {
+            color: rgb(82, 82, 82);
+            font-weight: 400;
+        }
+    }
+}

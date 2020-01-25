@@ -1,0 +1,57 @@
+.auth-form {
+    width: 95%;
+    position: relative;
+    top: -4rem;
+
+    &__form,
+    &__switch {
+        padding: 5vh 0;
+    }
+    .auth-signup,
+    .auth-recover {
+        position: relative;
+        top: -5rem;
+    }
+    &__form {
+        text-align: center;
+        &--title,
+        &--button {
+            margin: 3rem 0rem;
+        }
+        &--title {
+            margin-bottom: 3.5rem;
+            font-size: 2.5rem;
+
+            @include media(m) {
+                font-size: 2rem;
+            }
+        }
+        &--global-error {
+            color: var(--red);
+            font-size: 1.49rem;
+        }
+    }
+    &__helper {
+        font-size: 1.52rem;
+        font-weight: 500;
+        color: var(--black);
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        &.login-helper {
+            position: relative;
+            top: -3rem;
+        }
+
+        &--text {
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 0.4rem 0;
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+}

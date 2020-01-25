@@ -1,0 +1,28 @@
+.screen-modal {
+    position: absolute;
+    background: rgba(6, 8, 39, 0.267);
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 100vw;
+    height: 100vh;
+
+    @include flex-centered(row);
+    &__inner {
+        background: white;
+        box-shadow: var(--shadow);
+        border-radius: 2rem;
+        width: 45vmax;
+        padding: 2.9rem 6rem 4rem 6rem;
+        text-align: center;
+        &--title {
+            margin-bottom: 2rem;
+            font-size: 2.1rem;
+        }
+        &--btn {
+            &--item {
+                margin: 0.5rem 0;
+            }
+        }
+    }
+}

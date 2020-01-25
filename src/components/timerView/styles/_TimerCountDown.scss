@@ -1,0 +1,16 @@
+.timer-countdown {
+    &__clock {
+        font-size: 7rem;
+        font-weight: 800;
+        height: 100%;
+        padding: 0;
+
+        color: var(--color-black);
+        &.break-mode {
+            color: var(--color-red);
+        }
+        &.none-active {
+            color: rgb(228, 228, 228);
+        }
+    }
+}

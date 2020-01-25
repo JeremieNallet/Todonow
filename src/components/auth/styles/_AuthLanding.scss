@@ -1,0 +1,27 @@
+.auth-landing {
+    width: 80%;
+    position: relative;
+    top: -5rem;
+    &__title {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    &__btns {
+        .button {
+            margin: 1rem 0;
+        }
+        .guest-user-btn {
+            margin-top: 2rem;
+            color: var(--primary-color);
+            border: none;
+            background: none;
+            position: relative;
+            top: 5rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        display: flex;
+        flex-direction: column;
+    }
+}

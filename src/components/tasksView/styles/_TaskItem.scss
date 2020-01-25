@@ -1,0 +1,20 @@
+.task-item {
+    background: white;
+    box-shadow: var(--box-shadow);
+    padding: 3rem;
+    border-radius: 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+
+    &__top {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__bottom {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding-top: 2rem;
+    }
+}
