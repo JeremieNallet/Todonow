@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 //component
@@ -15,12 +15,15 @@ import { firestoreConnect } from 'react-redux-firebase';
 import {
     markTaskComplete,
     markTaskComplete_nodb,
-    selectTask_nodb
+    selectTask_nodb,
+    saveTimeSpent_nodb
 } from '../../store/actions/tasksActions';
 import { toggleTimer, stopTimer } from '../../store/actions/timerActions';
 
 // Services / assets
 import useInterval from '../../services/hooks/useInterval';
+import { useFirestore } from 'react-redux-firebase';
+import { useHistory } from 'react-router-dom';
 
 const Timer = ({
     dataBase,
@@ -32,7 +35,8 @@ const Timer = ({
     guestUser,
     localData,
     markTaskComplete_nodb,
-    selectTask_nodb
+    selectTask_nodb,
+    saveTimeSpent_nodb
 }) => {
     const [breakVal, setBreakVal] = useState(5);
     const [sessionVal, setSessionVal] = useState(25);
@@ -43,12 +47,17 @@ const Timer = ({
     const [mode, setMode] = useState('session');
     const [time, setTime] = useState(sessionVal * 60 * 1000);
     const [taskInfo, setTaskInfo] = useState({ id: null, title: null });
+    const [timeSpend, setTimeSpend] = useState(0);
 
     const [hasStarted, setHasStarted] = useState(false);
     const taskEmpty = !dataBase || !dataBase[userId] || dataBase[userId].task.length === 0;
     const [taskSelected, setTaskselected] = useState(false);
+    const history = useHistory();
+    const firestore = useFirestore();
 
     useInterval(() => setTime(time - 1000), isCounting ? 1000 : null);
+    useInterval(() => setTimeSpend(time => time + 1), isCounting ? 1000 : null);
+
     useEffect(() => void setTime(sessionVal * 60 * 1000), [sessionVal]);
 
     const setViewOptionFrom = data => {
@@ -107,6 +116,34 @@ const Timer = ({
         setIsCompleted(false);
         stopTimer();
     };
+
+    console.log(timeSpend, 'state');
+
+    const saveTimeSpend = useCallback(async () => {
+        if (!guestUser) {
+            const res = await firestore
+                .collection('tasks')
+                .doc(userId)
+                .get();
+            const task = res.data().task;
+            task.forEach(task => {
+                if (task.id === taskInfo.id) {
+                    task.time += timeSpend;
+                    console.log(task.time, 'data');
+                }
+            });
+            await firestore
+                .collection('tasks')
+                .doc(userId)
+                .update({ task });
+        }
+    }, [firestore, guestUser, taskInfo.id, timeSpend, userId]);
+
+    useEffect(() => {
+        history.listen(() => {
+            if (history.location.pathname === '/statistics') saveTimeSpend();
+        });
+    }, [history, saveTimeSpend]);
 
     return (
         <>
@@ -198,7 +235,8 @@ const mapDispatchToProps = {
     toggleTimer,
     stopTimer,
     markTaskComplete_nodb,
-    selectTask_nodb
+    selectTask_nodb,
+    saveTimeSpent_nodb
 };
 
 export default compose(

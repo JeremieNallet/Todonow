@@ -50,6 +50,9 @@ const NODB_selectTask = (state, payload) => {
         )
     };
 };
+const NODB_addTask = (state, payload) => {
+    return { ...state, tasks: [...state.tasks, payload] };
+};
 
 export default (state = initialState, { type, payload }) => {
     switch (type) {
@@ -65,11 +68,15 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, deleteTask: { ...state.deleteTask, loading: false } };
         case actionType.TASK_DELETE_FAIL:
             return { ...state, deleteTask: { ...state.deleteTask, loading: false } };
-        case actionType.TASK_ADD_NODB:
-            return { ...state, tasks: [...state.tasks, payload] };
 
+        case actionType.TASK_ADD_NODB:
+            return NODB_addTask(state, payload);
         case actionType.TASK_EDIT_NODB:
             return NODB_editTask(state, payload);
+
+        // case actionType.TASK_SAVE_TIME_SPENT_NODB:
+        //     return { ...state };
+
         case actionType.TASK_DELETE_NODB:
             return NODB_deleteTask(state, payload);
         case actionType.TASK_DELETE_ALL_COMPLETED_NODB:

@@ -7,8 +7,13 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 
-const StatisticsTime = ({ tasks, userId }) => {
-    let empty = !tasks || !tasks[userId] || tasks[userId].task.length === 0;
+const StatisticsTime = ({ dataBase, userId, localData, guestUser }) => {
+    let empty;
+    if (guestUser) {
+        empty = localData.length === 0;
+    } else {
+        empty = !dataBase || !dataBase[userId] || dataBase[userId].task.length === 0;
+    }
 
     return (
         <div className="stats-time">
@@ -23,7 +28,7 @@ const StatisticsTime = ({ tasks, userId }) => {
             )}
             <div className="stats-time__list">
                 {!empty
-                    ? tasks[userId].task.map(task => (
+                    ? dataBase[userId].task.map(task => (
                           <div key={task.id} className="item">
                               <div className="container">
                                   <div
@@ -39,8 +44,8 @@ const StatisticsTime = ({ tasks, userId }) => {
                                   <div className="item__text">
                                       <div className="item__text--name">{task.title}</div>
                                       <div className="item__text--time">
-                                          Time spent :{' '}
-                                          {moment(task.time * 1000).format('mm:ss')}s
+                                          Time spent : {moment(task.time * 1000).format('mm:ss')}
+                                          s
                                       </div>
                                   </div>
                               </div>
@@ -60,9 +65,11 @@ StatisticsTime.propTypes = {
     userId: PropTypes.string
 };
 
-const mapStateToProps = ({ firebase, firestore }) => ({
-    tasks: firestore.data.tasks,
-    userId: firebase.auth.uid
+const mapStateToProps = ({ firebase, firestore, task, auth }) => ({
+    dataBase: firestore.data.tasks,
+    userId: firebase.auth.uid,
+    guestUser: auth.guestUser,
+    localData: task.tasks
 });
 
 const mapDispatchToProps = {};

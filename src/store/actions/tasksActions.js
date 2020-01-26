@@ -16,11 +16,18 @@ export const adOneTask_nodb = data => dispatch => {
     });
 };
 
+export const saveTimeSpent_nodb = id => dispatch => {
+    // dispatch({
+    //     type: actionType.TASK_SAVE_TIME_SPENT_NODB,
+    //     payload: { id }
+    // });
+};
+
 export const editTask_nodb = (id, data) => dispatch => {
     dispatch({
         type: actionType.TASK_EDIT_NODB,
         payload: {
-            id: id,
+            id,
             title: data.title,
             description: data.description
         }
