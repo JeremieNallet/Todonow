@@ -6,12 +6,14 @@ const StatisticsState = ({ values }) => {
     const cells = [
         {
             id: 1,
+            title: 'completed todos',
             backgroundColor: 'var(--primary-color)',
             averageTime: completedVal.time,
             numberOfTasks: completedVal.length
         },
         {
             id: 2,
+            title: 'uncomplete todos',
             backgroundColor: 'var(--color-red)',
             averageTime: unCompletedVal.time,
             numberOfTasks: unCompletedVal.length
@@ -19,19 +21,19 @@ const StatisticsState = ({ values }) => {
     ];
     return (
         <div className="stats-state">
-            {cells.map(val => (
+            {cells.map(_ => (
                 <div
-                    key={val.id}
-                    style={{ backgroundColor: val.backgroundColor }}
+                    key={_.id}
+                    style={{ backgroundColor: _.backgroundColor }}
                     className="stats-state__cell"
                 >
                     <div className="stats-state__cell__text">
-                        <span className="stats-state__cell__text--title">Completed todos</span>
+                        <span className="stats-state__cell__text--title">{_.title}</span>
                         <span className="stats-state__cell__text--av-time">
-                            average time spent {val.averageTime}s
+                            average time spent {_.averageTime}
                         </span>
                     </div>
-                    <div className="stats-state__cell__total">{val.numberOfTasks}</div>
+                    <div className="stats-state__cell__total">{_.numberOfTasks}</div>
                 </div>
             ))}
         </div>

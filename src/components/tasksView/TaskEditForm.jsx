@@ -5,9 +5,9 @@ import { Button, Input } from '../layout/Inputs';
 
 // Store
 import { connect } from 'react-redux';
-import { editTask, editTask_nodb } from '../../store/actions/tasksActions';
+import { editTask, editTask_local } from '../../store/actions/tasksActions';
 
-const TaskEditForm = ({ closeModal, task, editTask, isLoading, editTask_nodb, guestUser }) => {
+const TaskEditForm = ({ closeModal, task, editTask, isLoading, editTask_local, guestUser }) => {
     const [values, setValues] = useState({
         title: task.title,
         description: task.description
@@ -23,7 +23,7 @@ const TaskEditForm = ({ closeModal, task, editTask, isLoading, editTask_nodb, gu
     const handleSubmit = async e => {
         e.preventDefault();
         if (guestUser) {
-            editTask_nodb(task.id, values);
+            editTask_local(task.id, values);
             closeModal();
         } else {
             const res = await editTask(task.id, values);
@@ -79,7 +79,7 @@ const mapStateToProps = ({ task, auth }) => ({
 
 const mapDispatchToProps = {
     editTask,
-    editTask_nodb
+    editTask_local
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskEditForm);

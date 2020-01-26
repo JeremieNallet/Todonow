@@ -20,29 +20,29 @@ const rrfConfig = {
     useFirestoreForProfile: true
 };
 
-// const saveLocalStorage = state => {
-//     try {
-//         const stateToDefine = JSON.stringify(state);
-//         localStorage.setItem('state', stateToDefine);
-//     } catch (err) {
-//         console.err(err);
-//     }
-// };
-// const loadLocalStorage = () => {
-//     try {
-//         const stateToDefine = localStorage.getItem('state');
-//         if (stateToDefine === null) return undefined;
-//         return JSON.parse(stateToDefine);
-//     } catch (e) {
-//         console.log(e);
-//     }
-// };
+const saveLocalStorage = state => {
+    try {
+        const stateToDefine = JSON.stringify(state);
+        localStorage.setItem('state', stateToDefine);
+    } catch (err) {
+        console.err(err);
+    }
+};
+const loadLocalStorage = () => {
+    try {
+        const stateToDefine = localStorage.getItem('state');
+        if (stateToDefine === null) return undefined;
+        return JSON.parse(stateToDefine);
+    } catch (e) {
+        console.log(e);
+    }
+};
 
-// const persistedState = loadLocalStorage();
+const persistedState = loadLocalStorage();
 const createReduxStore = () => {
     return createStore(
         rootReducer,
-        // persistedState,
+        persistedState,
         composeEnhancers(
             reduxFirestore(firebase),
             applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore }))
@@ -57,4 +57,4 @@ export const rrfProps = {
     dispatch: store.dispatch,
     createFirestoreInstance
 };
-// store.subscribe(() => saveLocalStorage(store.getState()));
+store.subscribe(() => saveLocalStorage(store.getState()));

@@ -12,6 +12,12 @@ const TimerSettings = ({ sessionSetting, breakSettings, setIsSettingOpen }) => {
     const [savedSession, setSaveSession] = useState(sessionVal);
     const [savedBreak, setSavedBreak] = useState(breakVal);
 
+    const saveValues = () => {
+        setIsSettingOpen(false);
+        setSessionVal(savedSession);
+        setBreakVal(savedBreak);
+    };
+
     return (
         <div className="timer-settings">
             <div className="timer-settings__group">
@@ -48,13 +54,7 @@ const TimerSettings = ({ sessionSetting, breakSettings, setIsSettingOpen }) => {
                 <div className="container">
                     <div className="timer-settings__save-btn">
                         <Button
-                            onClick={() =>
-                                void [
-                                    setIsSettingOpen(false),
-                                    setSessionVal(savedSession),
-                                    setBreakVal(savedBreak)
-                                ]
-                            }
+                            onClick={() => saveValues()}
                             type="btn-yellow"
                             title="save settings"
                         />

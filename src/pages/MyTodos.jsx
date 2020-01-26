@@ -10,8 +10,9 @@ import ScreenModal from '../components/layout/ScreenModal';
 import { connect } from 'react-redux';
 import {
     deleteAllCompletedTasks,
-    deleteAllCompleted_nodb
+    deleteAllCompleted_local
 } from '../store/actions/tasksActions';
+
 import { toggleModal } from '../store/actions/UIActions';
 
 const TasksList = ({
@@ -19,14 +20,14 @@ const TasksList = ({
     toggleModal,
     deleteAllCompletedTasks,
     guestUser,
-    deleteAllCompleted_nodb
+    deleteAllCompleted_local
 }) => {
     const close = () => {
         toggleModal();
     };
     const open = () => {
         if (guestUser) {
-            deleteAllCompleted_nodb();
+            deleteAllCompleted_local();
         } else {
             deleteAllCompletedTasks();
         }
@@ -68,7 +69,7 @@ const mapStateToProps = ({ ui, auth }) => ({
 const mapDispatchToProps = {
     deleteAllCompletedTasks,
     toggleModal,
-    deleteAllCompleted_nodb
+    deleteAllCompleted_local
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TasksList);

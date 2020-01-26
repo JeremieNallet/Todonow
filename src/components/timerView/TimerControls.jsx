@@ -15,13 +15,13 @@ const TimerControl = ({ activeStatus, isTimerActive, handlers, hasStarted }) => 
                     title={isCounting ? 'pause' : hasStarted ? 'resume' : 'start'}
                     type={isTimerActive ? 'btn-red' : 'btn-yellow'}
                     onClick={() => void [setIsCounting(!isCounting), startTimer()]}
-                ></Button>
+                />
                 {isTimerActive && (
                     <Button
                         title="reset timer"
                         type="btn-cancel"
                         onClick={() => setIsReseting(true)}
-                    ></Button>
+                    />
                 )}
             </div>
         </div>

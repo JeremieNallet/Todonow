@@ -12,7 +12,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { toggleModal } from '../../store/actions/UIActions';
-import { adOneTask_nodb } from '../../store/actions/tasksActions';
+import { adOneTask_local } from '../../store/actions/tasksActions';
 
 const Tasks = ({ localData, dataBase, userId, completedList, toggleModal, guestUser }) => {
     const [isAdding, setIsAdding] = useState(false);
@@ -83,7 +83,7 @@ const mapStateToProps = ({ firebase, firestore, task, auth }) => ({
 });
 const mapDispatchToProps = {
     toggleModal,
-    adOneTask_nodb
+    adOneTask_local
 };
 
 export default compose(

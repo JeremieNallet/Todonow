@@ -1,9 +1,9 @@
 import * as actionType from '../types';
 import uuid from 'uuid';
 
-export const adOneTask_nodb = data => dispatch => {
+export const adOneTask_local = data => dispatch => {
     dispatch({
-        type: actionType.TASK_ADD_NODB,
+        type: actionType.TASK_ADD_LOCAL,
         payload: {
             id: uuid.v4(),
             createAt: new Date().toISOString(),
@@ -11,21 +11,21 @@ export const adOneTask_nodb = data => dispatch => {
             description: data.description,
             completed: false,
             selected: false,
-            time: 0
+            timeSpent: 0
         }
     });
 };
 
-export const saveTimeSpent_nodb = id => dispatch => {
-    // dispatch({
-    //     type: actionType.TASK_SAVE_TIME_SPENT_NODB,
-    //     payload: { id }
-    // });
+export const saveTimeSpent_local = id => dispatch => {
+    dispatch({
+        type: actionType.TASK_SAVE_TIME_SPENT_LOCAL,
+        payload: { id }
+    });
 };
 
-export const editTask_nodb = (id, data) => dispatch => {
+export const editTask_local = (id, data) => dispatch => {
     dispatch({
-        type: actionType.TASK_EDIT_NODB,
+        type: actionType.TASK_EDIT_LOCAL,
         payload: {
             id,
             title: data.title,
@@ -34,30 +34,30 @@ export const editTask_nodb = (id, data) => dispatch => {
     });
 };
 
-export const deleteTask_nodb = id => dispatch => {
+export const deleteTask_local = id => dispatch => {
     dispatch({
-        type: actionType.TASK_DELETE_NODB,
+        type: actionType.TASK_DELETE_LOCAL,
         payload: { id }
     });
 };
 
-export const markTaskComplete_nodb = id => dispatch => {
+export const markTaskComplete_local = id => dispatch => {
     dispatch({
-        type: actionType.TASK_COMPLETE_NODB,
+        type: actionType.TASK_COMPLETE_LOCAL,
         payload: { id }
     });
 };
 
-export const selectTask_nodb = id => dispatch => {
+export const selectTask_local = id => dispatch => {
     dispatch({
-        type: actionType.TASK_SELECT_NODB,
+        type: actionType.TASK_SELECT_LOCAL,
         payload: { id }
     });
 };
 
-export const deleteAllCompleted_nodb = id => dispatch => {
+export const deleteAllCompleted_local = id => dispatch => {
     dispatch({
-        type: actionType.TASK_DELETE_ALL_COMPLETED_NODB,
+        type: actionType.TASK_DELETE_ALL_COMPLETED_LOCAL,
         payload: { id }
     });
 };
@@ -78,7 +78,7 @@ export const addOneTask = data => async (dispatch, getState, { getFirestore }) =
             description: data.description,
             completed: false,
             selected: false,
-            time: 0
+            timeSpent: 0
         };
         if (!res.data()) {
             firestore

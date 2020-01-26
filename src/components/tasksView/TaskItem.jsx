@@ -15,9 +15,9 @@ import {
     selectTask,
     deleteTask,
     markTaskComplete,
-    deleteTask_nodb,
-    markTaskComplete_nodb,
-    selectTask_nodb
+    deleteTask_local,
+    markTaskComplete_local,
+    selectTask_local
 } from '../../store/actions/tasksActions';
 
 const TaskItem = ({
@@ -26,10 +26,10 @@ const TaskItem = ({
     completedList,
     deleteTask,
     markTaskComplete,
-    deleteTask_nodb,
-    markTaskComplete_nodb,
+    deleteTask_local,
+    markTaskComplete_local,
     guestUser,
-    selectTask_nodb
+    selectTask_local
 }) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -44,9 +44,9 @@ const TaskItem = ({
                 : 'var(--color-black)'
     });
 
-    const _deleteTask = id => (guestUser ? deleteTask_nodb(id) : deleteTask(id));
-    const _markComplete = id => (guestUser ? markTaskComplete_nodb(id) : markTaskComplete(id));
-    const _selectTask = id => (guestUser ? selectTask_nodb(id) : selectTask(id));
+    const _deleteTask = id => (guestUser ? deleteTask_local(id) : deleteTask(id));
+    const _markComplete = id => (guestUser ? markTaskComplete_local(id) : markTaskComplete(id));
+    const _selectTask = id => (guestUser ? selectTask_local(id) : selectTask(id));
 
     return (
         <>
@@ -104,10 +104,10 @@ TaskItem.propTypes = {
     completedList: PropTypes.bool,
     deleteTask: PropTypes.func,
     selectTask: PropTypes.func,
-    selectTask_nodb: PropTypes.func,
-    deleteTask_nodb: PropTypes.func,
+    selectTask_local: PropTypes.func,
+    deleteTask_local: PropTypes.func,
     markTaskComplete: PropTypes.func,
-    markTaskComplete_nodb: PropTypes.func
+    markTaskComplete_local: PropTypes.func
 };
 
 const mapStateToProps = ({ firebase, firestore, auth, task }) => ({
@@ -122,9 +122,9 @@ const mapDispatchToProps = {
     selectTask,
     deleteTask,
     markTaskComplete,
-    deleteTask_nodb,
-    markTaskComplete_nodb,
-    selectTask_nodb
+    deleteTask_local,
+    markTaskComplete_local,
+    selectTask_local
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskItem);

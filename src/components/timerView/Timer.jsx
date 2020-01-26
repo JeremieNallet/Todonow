@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 //component
@@ -14,9 +14,9 @@ import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import {
     markTaskComplete,
-    markTaskComplete_nodb,
-    selectTask_nodb,
-    saveTimeSpent_nodb
+    markTaskComplete_local,
+    selectTask_local,
+    saveTimeSpent_local
 } from '../../store/actions/tasksActions';
 import { toggleTimer, stopTimer } from '../../store/actions/timerActions';
 
@@ -34,37 +34,41 @@ const Timer = ({
     isTimerActive,
     guestUser,
     localData,
-    markTaskComplete_nodb,
-    selectTask_nodb,
-    saveTimeSpent_nodb
+    markTaskComplete_local,
+    saveTimeSpent_local
 }) => {
-    const [breakVal, setBreakVal] = useState(5);
-    const [sessionVal, setSessionVal] = useState(25);
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const [isReseting, setIsReseting] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
     const [isCounting, setIsCounting] = useState(false);
+    const [hasStarted, setHasStarted] = useState(false);
+    const [taskSelected, setTaskselected] = useState(false);
+
+    const [breakVal, setBreakVal] = useState(5);
+    const [sessionVal, setSessionVal] = useState(25);
     const [mode, setMode] = useState('session');
-    const [time, setTime] = useState(sessionVal * 60 * 1000);
     const [taskInfo, setTaskInfo] = useState({ id: null, title: null });
     const [timeSpend, setTimeSpend] = useState(0);
+    const [time, setTime] = useState();
 
-    const [hasStarted, setHasStarted] = useState(false);
     const taskEmpty = !dataBase || !dataBase[userId] || dataBase[userId].task.length === 0;
-    const [taskSelected, setTaskselected] = useState(false);
     const history = useHistory();
     const firestore = useFirestore();
 
-    useInterval(() => setTime(time - 1000), isCounting ? 1000 : null);
-    useInterval(() => setTimeSpend(time => time + 1), isCounting ? 1000 : null);
-
+    useInterval(() => onTick(), isCounting ? 1000 : null);
     useEffect(() => void setTime(sessionVal * 60 * 1000), [sessionVal]);
+
+    const onTick = () => {
+        setTime(time => time - 1000);
+        setTimeSpend(time => time + 1);
+        saveTimeSpent_local(taskInfo.id);
+    };
 
     const setViewOptionFrom = data => {
         data.find(task => task.selected && setTaskInfo({ id: task.id, title: task.title }));
         data.find(task => task.selected && setHasStarted(task.time > 0 ? true : false));
     };
-    const selectTaskFrom = data => {
+    const getSelectedTaskFrom = data => {
         const taskSelected = data.find(task => task.selected);
         setTaskselected(taskSelected);
     };
@@ -72,23 +76,31 @@ const Timer = ({
     useEffect(() => {
         if (guestUser) {
             setViewOptionFrom(localData);
-            selectTaskFrom(localData);
+            getSelectedTaskFrom(localData);
         } else {
             if (taskEmpty) return;
             else {
                 setViewOptionFrom(dataBase[userId].task);
-                selectTaskFrom(dataBase[userId].task);
+                getSelectedTaskFrom(dataBase[userId].task);
             }
         }
     }, [guestUser, taskEmpty, dataBase, localData, userId]);
 
     useEffect(() => {
-        const data = localStorage.getItem('timer');
-        if (data) setTime(JSON.parse(data));
+        try {
+            const data = localStorage.getItem('timer');
+            if (data) setTime(JSON.parse(data));
+        } catch (error) {
+            console.log(error);
+        }
     }, []);
 
     useEffect(() => {
-        localStorage.setItem('timer', JSON.stringify(time));
+        try {
+            window.localStorage.setItem('timer', JSON.stringify(time));
+        } catch (error) {
+            console.log(error);
+        }
     });
 
     useEffect(() => {
@@ -110,40 +122,37 @@ const Timer = ({
     };
 
     const markAsComplete = () => {
-        guestUser ? markTaskComplete_nodb(taskInfo.id) : markTaskComplete(taskInfo.id);
+        guestUser ? markTaskComplete_local(taskInfo.id) : markTaskComplete(taskInfo.id);
         setTime(sessionVal * 60 * 1000);
         setIsCounting(false);
         setIsCompleted(false);
         stopTimer();
     };
 
-    console.log(timeSpend, 'state');
-
-    const saveTimeSpend = useCallback(async () => {
-        if (!guestUser) {
-            const res = await firestore
-                .collection('tasks')
-                .doc(userId)
-                .get();
-            const task = res.data().task;
-            task.forEach(task => {
-                if (task.id === taskInfo.id) {
-                    task.time += timeSpend;
-                    console.log(task.time, 'data');
-                }
-            });
-            await firestore
-                .collection('tasks')
-                .doc(userId)
-                .update({ task });
-        }
-    }, [firestore, guestUser, taskInfo.id, timeSpend, userId]);
-
     useEffect(() => {
         history.listen(() => {
-            if (history.location.pathname === '/statistics') saveTimeSpend();
+            if (history.location.pathname === '/statistics') {
+                (async () => {
+                    if (!guestUser) {
+                        const res = await firestore
+                            .collection('tasks')
+                            .doc(userId)
+                            .get();
+                        const task = res.data().task;
+                        task.forEach(task => {
+                            if (task.id === taskInfo.id) {
+                                task.timeSpend += timeSpend;
+                            }
+                        });
+                        await firestore
+                            .collection('tasks')
+                            .doc(userId)
+                            .update({ task });
+                    }
+                })();
+            }
         });
-    }, [history, saveTimeSpend]);
+    }, [firestore, guestUser, history, taskInfo.id, timeSpend, userId]);
 
     return (
         <>
@@ -234,9 +243,9 @@ const mapDispatchToProps = {
     markTaskComplete,
     toggleTimer,
     stopTimer,
-    markTaskComplete_nodb,
-    selectTask_nodb,
-    saveTimeSpent_nodb
+    markTaskComplete_local,
+    selectTask_local,
+    saveTimeSpent_local
 };
 
 export default compose(

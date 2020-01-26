@@ -1,4 +1,5 @@
 import * as actionType from '../types';
+import * as localData from '../../utils/localDataReducer';
 
 const initialState = {
     error: null,
@@ -8,50 +9,6 @@ const initialState = {
         loading: false
     },
     tasks: []
-};
-
-const NODB_editTask = (state, payload) => {
-    return {
-        ...state,
-        tasks: state.tasks.map(el => {
-            if (el.id === payload.id) {
-                el.title = payload.title;
-                el.description = payload.description;
-            } else return { ...el };
-            return el;
-        })
-    };
-};
-const NODB_deleteAllCompletedTask = state => {
-    return {
-        ...state,
-        tasks: state.tasks.filter(el => !el.completed)
-    };
-};
-const NODB_deleteTask = (state, payload) => {
-    return {
-        ...state,
-        tasks: state.tasks.filter(el => el.id !== payload.id)
-    };
-};
-const NODB_markTaskComplete = (state, payload) => {
-    return {
-        ...state,
-        tasks: state.tasks.map(el =>
-            el.id === payload.id ? { ...el, completed: true, selected: false } : { ...el }
-        )
-    };
-};
-const NODB_selectTask = (state, payload) => {
-    return {
-        ...state,
-        tasks: state.tasks.map(el =>
-            el.id === payload.id ? { ...el, selected: !el.selected } : { ...el, selected: false }
-        )
-    };
-};
-const NODB_addTask = (state, payload) => {
-    return { ...state, tasks: [...state.tasks, payload] };
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -69,22 +26,20 @@ export default (state = initialState, { type, payload }) => {
         case actionType.TASK_DELETE_FAIL:
             return { ...state, deleteTask: { ...state.deleteTask, loading: false } };
 
-        case actionType.TASK_ADD_NODB:
-            return NODB_addTask(state, payload);
-        case actionType.TASK_EDIT_NODB:
-            return NODB_editTask(state, payload);
-
-        // case actionType.TASK_SAVE_TIME_SPENT_NODB:
-        //     return { ...state };
-
-        case actionType.TASK_DELETE_NODB:
-            return NODB_deleteTask(state, payload);
-        case actionType.TASK_DELETE_ALL_COMPLETED_NODB:
-            return NODB_deleteAllCompletedTask(state);
-        case actionType.TASK_COMPLETE_NODB:
-            return NODB_markTaskComplete(state, payload);
-        case actionType.TASK_SELECT_NODB:
-            return NODB_selectTask(state, payload);
+        case actionType.TASK_ADD_LOCAL:
+            return localData.addTask(state, payload);
+        case actionType.TASK_EDIT_LOCAL:
+            return localData.editTask(state, payload);
+        case actionType.TASK_SAVE_TIME_SPENT_LOCAL:
+            return localData.saveTimeSpent(state, payload);
+        case actionType.TASK_DELETE_LOCAL:
+            return localData.deleteTask(state, payload);
+        case actionType.TASK_DELETE_ALL_COMPLETED_LOCAL:
+            return localData.deleteAllCompletedTask(state);
+        case actionType.TASK_COMPLETE_LOCAL:
+            return localData.markTaskComplete(state, payload);
+        case actionType.TASK_SELECT_LOCAL:
+            return localData.selectTask(state, payload);
 
         default:
             return state;

@@ -6,15 +6,15 @@ import { Button, Input } from '../layout/Inputs';
 
 // Store
 import { connect } from 'react-redux';
-import { addOneTask, adOneTask_nodb } from '../../store/actions/tasksActions';
+import { addOneTask, adOneTask_local } from '../../store/actions/tasksActions';
 
 // Services / assets
 import useAddTask from '../../services/hooks/useAddTask';
 import { validateTask } from '../../assets/utils/validate';
 
-const TaskAddForm = ({ adOneTask_nodb, addOneTask, isLoading, setIsAdding, guestUser }) => {
+const TaskAddForm = ({ adOneTask_local, addOneTask, isLoading, setIsAdding, guestUser }) => {
     const { handleChange, handleSubmit, values, errors } = useAddTask(
-        guestUser ? adOneTask_nodb : addOneTask,
+        guestUser ? adOneTask_local : addOneTask,
         validateTask,
         setIsAdding
     );
@@ -66,7 +66,7 @@ const mapStateToProps = ({ task, auth }) => ({
 
 const mapDispatchToProps = {
     addOneTask,
-    adOneTask_nodb
+    adOneTask_local
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskAddForm);

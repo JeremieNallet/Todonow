@@ -8,16 +8,19 @@ import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 
 const StatisticsTime = ({ dataBase, userId, localData, guestUser }) => {
-    let empty;
+    let listEmpty;
+    let data;
     if (guestUser) {
-        empty = localData.length === 0;
+        listEmpty = localData.length === 0;
+        data = localData;
     } else {
-        empty = !dataBase || !dataBase[userId] || dataBase[userId].task.length === 0;
+        listEmpty = !dataBase || !dataBase[userId] || dataBase[userId].task.length === 0;
+        data = dataBase[userId].task;
     }
 
     return (
         <div className="stats-time">
-            {empty ? (
+            {listEmpty ? (
                 <div className="stats-time__header empty">
                     <span>Your todo list is empty</span>
                 </div>
@@ -27,8 +30,8 @@ const StatisticsTime = ({ dataBase, userId, localData, guestUser }) => {
                 </div>
             )}
             <div className="stats-time__list">
-                {!empty
-                    ? dataBase[userId].task.map(task => (
+                {!listEmpty
+                    ? data.map(task => (
                           <div key={task.id} className="item">
                               <div className="container">
                                   <div
