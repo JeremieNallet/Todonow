@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 //component
@@ -18,7 +18,7 @@ import {
     selectTask_local,
     saveTimeSpent_local
 } from '../../store/actions/tasksActions';
-import { toggleTimer, stopTimer } from '../../store/actions/timerActions';
+import { timerHasStarted, timerHasStopped } from '../../store/actions/timerActions';
 
 // Services / assets
 import useInterval from '../../services/hooks/useInterval';
@@ -29,8 +29,8 @@ const Timer = ({
     dataBase,
     userId,
     markTaskComplete,
-    toggleTimer,
-    stopTimer,
+    timerHasStarted,
+    timerHasStopped,
     isTimerActive,
     guestUser,
     localData,
@@ -39,13 +39,12 @@ const Timer = ({
 }) => {
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const [isReseting, setIsReseting] = useState(false);
-    const [isCompleted, setIsCompleted] = useState(false);
     const [isCounting, setIsCounting] = useState(false);
-    const [hasStarted, setHasStarted] = useState(false);
-    const [taskSelected, setTaskselected] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(false);
+    const [taskSelected, setTaskSelected] = useState(false);
 
-    const [breakVal, setBreakVal] = useState(5);
-    const [sessionVal, setSessionVal] = useState(25);
+    const [breakVal, setBreakVal] = useState(0.1);
+    const [sessionVal, setSessionVal] = useState(0.1);
     const [mode, setMode] = useState('session');
     const [taskInfo, setTaskInfo] = useState({ id: null, title: null });
     const [timeSpend, setTimeSpend] = useState(0);
@@ -63,70 +62,86 @@ const Timer = ({
         setTimeSpend(time => time + 1);
         saveTimeSpent_local(taskInfo.id);
     };
-
-    const setViewOptionFrom = data => {
+    const displayTaskTitleOnTimer = data => {
         data.find(task => task.selected && setTaskInfo({ id: task.id, title: task.title }));
-        data.find(task => task.selected && setHasStarted(task.time > 0 ? true : false));
     };
-    const getSelectedTaskFrom = data => {
+    const getCurrentSelectedTask = data => {
         const taskSelected = data.find(task => task.selected);
-        setTaskselected(taskSelected);
+        setTaskSelected(taskSelected);
     };
+    const initialTimerSettings = useCallback(() => {
+        setIsCounting(false);
+        setMode('session');
+        setTime(sessionVal * 60 * 1000);
+        setIsReseting(false);
+        timerHasStopped();
+    }, [sessionVal, timerHasStopped]);
+    useEffect(() => void initialTimerSettings(), [initialTimerSettings]);
 
     useEffect(() => {
         if (guestUser) {
-            setViewOptionFrom(localData);
-            getSelectedTaskFrom(localData);
+            displayTaskTitleOnTimer(localData);
+            getCurrentSelectedTask(localData);
         } else {
             if (taskEmpty) return;
             else {
-                setViewOptionFrom(dataBase[userId].task);
-                getSelectedTaskFrom(dataBase[userId].task);
+                displayTaskTitleOnTimer(dataBase[userId].task);
+                getCurrentSelectedTask(dataBase[userId].task);
             }
         }
     }, [guestUser, taskEmpty, dataBase, localData, userId]);
 
-    useEffect(() => {
-        try {
-            const data = localStorage.getItem('timer');
-            if (data) setTime(JSON.parse(data));
-        } catch (error) {
-            console.log(error);
-        }
-    }, []);
+    // useEffect(() => {
+    //     try {
+    //         const data = localStorage.getItem('timer');
+    //         if (data) setTime(JSON.parse(data));
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }, []);
 
-    useEffect(() => {
-        try {
-            window.localStorage.setItem('timer', JSON.stringify(time));
-        } catch (error) {
-            console.log(error);
-        }
-    });
+    // useEffect(() => {
+    //     try {
+    //         window.localStorage.setItem('timer', JSON.stringify(time));
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // });
+    const [audio] = useState(new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3'));
 
     useEffect(() => {
         if (time === 0 && mode === 'session') {
             setMode('break');
             setTime(breakVal * 60 * 1000);
+            setIsCounting(false);
+            audio.play();
+            audio.loop = true;
         } else if (time === 0 && mode === 'break') {
             setMode('session');
             setTime(sessionVal * 60 * 1000);
+            audio.play();
+            audio.loop = false;
         }
-    }, [time, breakVal, sessionVal, mode]);
+    }, [time, breakVal, sessionVal, mode, timerHasStarted, audio]);
 
-    const resetTimer = () => {
-        setIsCounting(false);
+    const startTimer = () => {
+        setIsCounting(!isCounting);
+        timerHasStarted();
+        audio.pause();
+        audio.currentTime = 0;
+    };
+    const cancelBreak = () => {
         setMode('session');
         setTime(sessionVal * 60 * 1000);
-        setIsReseting(false);
-        stopTimer();
     };
+    const resetTimer = () => initialTimerSettings();
 
     const markAsComplete = () => {
         guestUser ? markTaskComplete_local(taskInfo.id) : markTaskComplete(taskInfo.id);
         setTime(sessionVal * 60 * 1000);
         setIsCounting(false);
         setIsCompleted(false);
-        stopTimer();
+        timerHasStopped();
     };
 
     useEffect(() => {
@@ -175,10 +190,12 @@ const Timer = ({
                         <>
                             <TimerCountDown options={[mode, time]} isCounting={isCounting} />
                             <TimerControl
-                                hasStarted={hasStarted}
-                                activeStatus={[isCounting, setIsCounting]}
-                                handlers={[toggleTimer, setIsReseting]}
-                                isTimerActive={isTimerActive}
+                                startTimer={startTimer}
+                                cancelBreak={cancelBreak}
+                                mode={mode}
+                                setIsCounting={setIsCounting}
+                                setIsReseting={setIsReseting}
+                                isCounting={isCounting}
                             />
 
                             {isReseting && (
@@ -224,8 +241,8 @@ Timer.propTypes = {
     tasks: PropTypes.object,
     userId: PropTypes.string,
     markTaskComplete: PropTypes.func,
-    toggleTimer: PropTypes.func,
-    stopTimer: PropTypes.func,
+    timerHasStarted: PropTypes.func,
+    timerHasStopped: PropTypes.func,
     isTimerActive: PropTypes.bool,
     isOneTaskSelected: PropTypes.bool
 };
@@ -241,8 +258,8 @@ const mapStateToProps = ({ firebase, firestore, timer, task, auth }) => ({
 
 const mapDispatchToProps = {
     markTaskComplete,
-    toggleTimer,
-    stopTimer,
+    timerHasStarted,
+    timerHasStopped,
     markTaskComplete_local,
     selectTask_local,
     saveTimeSpent_local
