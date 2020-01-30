@@ -56,7 +56,7 @@ const Timer = ({
 
     useInterval(() => onTick(), isCounting ? 1000 : null);
     useEffect(() => void setTime(sessionVal * 60 * 1000), [sessionVal]);
-
+    console.log(timerHasStopped);
     const onTick = () => {
         setTime(time => time - 1000);
         setTimeSpend(time => time + 1);
@@ -76,6 +76,7 @@ const Timer = ({
         setIsReseting(false);
         timerHasStopped();
     }, [sessionVal, timerHasStopped]);
+
     useEffect(() => void initialTimerSettings(), [initialTimerSettings]);
 
     useEffect(() => {
@@ -130,11 +131,6 @@ const Timer = ({
         audio.pause();
         audio.currentTime = 0;
     };
-    const cancelBreak = () => {
-        setMode('session');
-        setTime(sessionVal * 60 * 1000);
-    };
-    const resetTimer = () => initialTimerSettings();
 
     const markAsComplete = () => {
         guestUser ? markTaskComplete_local(taskInfo.id) : markTaskComplete(taskInfo.id);
@@ -142,6 +138,13 @@ const Timer = ({
         setIsCounting(false);
         setIsCompleted(false);
         timerHasStopped();
+    };
+
+    const resetTimer = () => initialTimerSettings();
+
+    const cancelBreak = () => {
+        setMode('session');
+        setTime(sessionVal * 60 * 1000);
     };
 
     useEffect(() => {
@@ -193,7 +196,7 @@ const Timer = ({
                                 startTimer={startTimer}
                                 cancelBreak={cancelBreak}
                                 mode={mode}
-                                setIsCounting={setIsCounting}
+                                isTimerActive={isTimerActive}
                                 setIsReseting={setIsReseting}
                                 isCounting={isCounting}
                             />
@@ -226,9 +229,7 @@ const Timer = ({
                     <div className="timer__indicator">
                         <p>
                             {taskInfo.title}' selected !{' '}
-                            <span onClick={() => setIsCompleted(true)}>
-                                Mark it as completed ?
-                            </span>
+                            <span onClick={() => setIsCompleted(true)}>Mark it as completed ?</span>
                         </p>
                     </div>
                 )}

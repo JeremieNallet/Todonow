@@ -4,16 +4,22 @@ import PropTypes from 'prop-types';
 // Components
 import { Button } from '../layout/Inputs';
 
-const TimerControl = ({ isCounting, setIsReseting, mode, cancelBreak, startTimer }) => {
-    console.log(mode);
-
+const TimerControl = ({
+    isCounting,
+    setIsReseting,
+    mode,
+    cancelBreak,
+    startTimer,
+    isTimerActive
+}) => {
     return (
         <div className={`timer-control ${!isCounting ? 'not-active' : null}`}>
             <div className="timer-control--container">
                 {mode === 'session' && (
                     <Button
                         type={'btn-yellow'}
-                        title={`${isCounting ? 'pause' : 'start'}`}
+                        s
+                        title={`${isCounting ? 'pause' : isTimerActive ? 'resume' : 'start'}`}
                         onClick={startTimer}
                     />
                 )}
