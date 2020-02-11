@@ -5,7 +5,7 @@ can add, edit, and delete task and set a customizable timer for any chosen task.
 
 ### This project uses :
 
--   [Create React App](https://github.com/facebook/create-react-app)
+-   [create-react-app](https://github.com/facebook/create-react-app)
 -   [React-redux-firebase binding](https://github.com/prescottprue/react-redux-firebase)
 -   [Firebase & firestore](https://firebase.google.com)
 -   [React-hook-form](https://github.com/react-hook-form/react-hook-form)
