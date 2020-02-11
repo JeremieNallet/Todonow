@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+
 // Store
 import { connect } from 'react-redux';
 import { signupUser, cleanUp } from '../../store/actions/authActions';
@@ -8,60 +9,63 @@ import { signupUser, cleanUp } from '../../store/actions/authActions';
 import { Button, Input } from '../layout/Inputs';
 
 // Services / assests
-import useForm from '../../services/hooks/useForm';
-import { validateSignup } from '../../assets/utils/validate';
+import { useForm } from 'react-hook-form';
 
 const AuthFromSignUp = ({ isLoading, signupUser, cleanUp, globalError, onClick }) => {
-    const { handleSubmit, handleChange, values, errors } = useForm(
-        signupUser,
-        validateSignup,
-        cleanUp
-    );
+    const { handleSubmit, register, errors, watch } = useForm();
+    const onSubmit = async values => signupUser(values);
+    const password = React.useRef({});
+    password.current = watch('password', '');
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => void cleanUp(), []);
 
     return (
         <div className="auth-form">
-            <form noValidate onSubmit={handleSubmit} className="auth-form__form auth-signup">
+            <form onSubmit={handleSubmit(onSubmit)} className="auth-form__form">
                 <div className="auth-form__form--title">
                     <h3>Create your account</h3>
                 </div>
                 <div className="auth-form__form--fields">
                     <Input
-                        label={!values.email && 'Your email address'}
-                        type="email"
                         name="email"
-                        value={values.email}
-                        onChange={handleChange}
-                        error={errors.email}
-                        errorClass={errors.email && 'error-style'}
+                        placeholder="Your email ..."
+                        forwardRef={register({
+                            required: 'Required',
+                            pattern: {
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                message: 'invalid email address'
+                            }
+                        })}
+                        error={errors.email && errors.email.message}
                     />
                     <Input
-                        label={!values.password && 'choose a password'}
-                        type="password"
+                        placeholder="Your password ..."
                         name="password"
-                        value={values.password}
-                        onChange={handleChange}
-                        error={errors.password}
-                        errorClass={errors.password && 'error-style'}
-                        passwordClass="password-style"
+                        type="password"
+                        forwardRef={register({
+                            required: 'You must specify a password',
+                            minLength: {
+                                value: 8,
+                                message: 'Password must have at least 8 characters'
+                            }
+                        })}
+                        error={errors.password && errors.password.message}
                     />
                     <Input
-                        label={!values.confirmPassword && 'choose a password'}
+                        placeholder="Comfirm password..."
+                        name="password_repeat"
                         type="password"
-                        name="confirmPassword"
-                        value={values.confirmPassword}
-                        onChange={handleChange}
-                        error={errors.confirmPassword}
-                        errorClass={errors.confirmPassword && 'error-style'}
-                        passwordClass="password-style"
+                        forwardRef={register({
+                            validate: value =>
+                                value === password.current || 'The passwords do not match'
+                        })}
+                        error={errors.password_repeat && errors.password_repeat.message}
                     />
                 </div>
                 <small className="auth-form__form--global-error">{globalError}</small>
                 <div className="auth-form__form--button">
-                    <Button
-                        isLoading={isLoading && 'loading'}
-                        title="Create your account"
-                        type="btn-blue"
-                    />
+                    <Button isLoading={isLoading && 'loading'} title="Login" type="btn-blue" />
                 </div>
             </form>
             <span className="auth-form__helper login-helper">

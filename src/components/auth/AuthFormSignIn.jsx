@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
+import { useForm } from 'react-hook-form';
 // Component
 import AuthFormRecover from './AuthFormRecover';
 import { Button, Input } from '../layout/Inputs';
@@ -9,44 +9,48 @@ import { Button, Input } from '../layout/Inputs';
 import { signinUser, cleanUp } from '../../store/actions/authActions';
 import { connect } from 'react-redux';
 
-// Services / assests
-import useForm from '../../services/hooks/useForm';
-import { validateSignIn } from '../../assets/utils/validate';
-
 const AuthFormSignIn = ({ signinUser, globalError, cleanUp, isLoading, onClick }) => {
     const [haveForgotten, setHaveForgotten] = useState(false);
-    const { handleChange, handleSubmit, values, errors } = useForm(
-        signinUser,
-        validateSignIn,
-        cleanUp
-    );
+    const { handleSubmit, register, errors } = useForm();
+
+    const onSubmit = async values => signinUser(values);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => void cleanUp(), []);
+
     return (
         <>
             {!haveForgotten ? (
                 <div className="auth-form">
-                    <form noValidate onSubmit={handleSubmit} className="auth-form__form">
+                    <form onSubmit={handleSubmit(onSubmit)} className="auth-form__form">
                         <div className="auth-form__form--title">
                             <h3>Login to your account</h3>
                         </div>
                         <div className="auth-form__form--fields">
                             <Input
-                                error={errors.email}
-                                onChange={handleChange}
-                                type="email"
                                 name="email"
-                                label={!values.email && 'Your email ...'}
-                                value={values.email}
-                                errorClass={errors.email ? 'error-style' : null}
+                                placeholder="email"
+                                forwardRef={register({
+                                    required: 'Required',
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                        message: 'invalid email address'
+                                    }
+                                })}
+                                error={errors.email && errors.email.message}
                             />
                             <Input
-                                error={errors.password}
-                                onChange={handleChange}
-                                type="password"
                                 name="password"
-                                label={!values.password && 'Your password ...'}
-                                value={values.password}
-                                passwordClass="password-style"
-                                errorClass={errors.password ? 'error-style' : null}
+                                type="password"
+                                placeholder="password"
+                                forwardRef={register({
+                                    required: 'You must specify a password',
+                                    minLength: {
+                                        value: 6,
+                                        message: 'Password must have at least 6 characters'
+                                    }
+                                })}
+                                error={errors.password && errors.password.message}
                             />
                         </div>
                         <small className="auth-form__form--global-error">{globalError}</small>
