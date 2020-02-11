@@ -43,8 +43,8 @@ const Timer = ({
     const [isCompleted, setIsCompleted] = useState(false);
     const [taskSelected, setTaskSelected] = useState(false);
 
-    const [breakVal, setBreakVal] = useState(0.1);
-    const [sessionVal, setSessionVal] = useState(0.1);
+    const [breakVal, setBreakVal] = useState(5);
+    const [sessionVal, setSessionVal] = useState(25);
     const [mode, setMode] = useState('session');
     const [taskInfo, setTaskInfo] = useState({ id: null, title: null });
     const [timeSpend, setTimeSpend] = useState(0);
@@ -54,21 +54,6 @@ const Timer = ({
     const history = useHistory();
     const firestore = useFirestore();
 
-    useInterval(() => onTick(), isCounting ? 1000 : null);
-    useEffect(() => void setTime(sessionVal * 60 * 1000), [sessionVal]);
-    console.log(timerHasStopped);
-    const onTick = () => {
-        setTime(time => time - 1000);
-        setTimeSpend(time => time + 1);
-        saveTimeSpent_local(taskInfo.id);
-    };
-    const displayTaskTitleOnTimer = data => {
-        data.find(task => task.selected && setTaskInfo({ id: task.id, title: task.title }));
-    };
-    const getCurrentSelectedTask = data => {
-        const taskSelected = data.find(task => task.selected);
-        setTaskSelected(taskSelected);
-    };
     const initialTimerSettings = useCallback(() => {
         setIsCounting(false);
         setMode('session');
@@ -77,7 +62,25 @@ const Timer = ({
         timerHasStopped();
     }, [sessionVal, timerHasStopped]);
 
+    const [audio] = useState(new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3'));
+    useInterval(() => onTick(), isCounting ? 1000 : null);
+    useEffect(() => void setTime(sessionVal * 60 * 1000), [sessionVal]);
     useEffect(() => void initialTimerSettings(), [initialTimerSettings]);
+
+    const onTick = () => {
+        setTime(time => time - 1000);
+        setTimeSpend(time => time + 1);
+        saveTimeSpent_local(taskInfo.id);
+    };
+
+    const displayTaskTitleOnTimer = data => {
+        data.find(task => task.selected && setTaskInfo({ id: task.id, title: task.title }));
+    };
+
+    const getCurrentSelectedTask = data => {
+        const taskSelected = data.find(task => task.selected);
+        setTaskSelected(taskSelected);
+    };
 
     useEffect(() => {
         if (guestUser) {
@@ -92,23 +95,22 @@ const Timer = ({
         }
     }, [guestUser, taskEmpty, dataBase, localData, userId]);
 
-    // useEffect(() => {
-    //     try {
-    //         const data = localStorage.getItem('timer');
-    //         if (data) setTime(JSON.parse(data));
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }, []);
+    useEffect(() => {
+        try {
+            const data = localStorage.getItem('timer');
+            if (data) setTime(JSON.parse(data));
+        } catch (error) {
+            console.log(error);
+        }
+    }, []);
 
-    // useEffect(() => {
-    //     try {
-    //         window.localStorage.setItem('timer', JSON.stringify(time));
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // });
-    const [audio] = useState(new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3'));
+    useEffect(() => {
+        try {
+            window.localStorage.setItem('timer', JSON.stringify(time));
+        } catch (error) {
+            console.log(error);
+        }
+    });
 
     useEffect(() => {
         if (time === 0 && mode === 'session') {
@@ -125,13 +127,6 @@ const Timer = ({
         }
     }, [time, breakVal, sessionVal, mode, timerHasStarted, audio]);
 
-    const startTimer = () => {
-        setIsCounting(!isCounting);
-        timerHasStarted();
-        audio.pause();
-        audio.currentTime = 0;
-    };
-
     const markAsComplete = () => {
         guestUser ? markTaskComplete_local(taskInfo.id) : markTaskComplete(taskInfo.id);
         setTime(sessionVal * 60 * 1000);
@@ -142,35 +137,34 @@ const Timer = ({
 
     const resetTimer = () => initialTimerSettings();
 
-    const cancelBreak = () => {
-        setMode('session');
-        setTime(sessionVal * 60 * 1000);
-    };
-
     useEffect(() => {
-        history.listen(() => {
-            if (history.location.pathname === '/statistics') {
-                (async () => {
-                    if (!guestUser) {
-                        const res = await firestore
-                            .collection('tasks')
-                            .doc(userId)
-                            .get();
-                        const task = res.data().task;
-                        task.forEach(task => {
-                            if (task.id === taskInfo.id) {
-                                task.timeSpend += timeSpend;
-                            }
-                        });
-                        await firestore
-                            .collection('tasks')
-                            .doc(userId)
-                            .update({ task });
-                    }
-                })();
-            }
-        });
-    }, [firestore, guestUser, history, taskInfo.id, timeSpend, userId]);
+        if (taskEmpty) {
+            return;
+        } else {
+            history.listen(() => {
+                if (history.location.pathname === '/statistics') {
+                    (async () => {
+                        if (!guestUser) {
+                            const res = await firestore
+                                .collection('tasks')
+                                .doc(userId)
+                                .get();
+                            const task = res.data().task;
+                            task.forEach(task => {
+                                if (task.id === taskInfo.id) {
+                                    task.timeSpend += timeSpend;
+                                }
+                            });
+                            await firestore
+                                .collection('tasks')
+                                .doc(userId)
+                                .update({ task });
+                        }
+                    })();
+                }
+            });
+        }
+    }, [firestore, guestUser, history, taskEmpty, taskInfo.id, timeSpend, userId]);
 
     return (
         <>
@@ -184,33 +178,30 @@ const Timer = ({
                 <div className="timer__view">
                     {isSettingOpen && (
                         <TimerSettings
-                            sessionSetting={[sessionVal, setSessionVal]}
-                            breakSettings={[breakVal, setBreakVal]}
-                            setIsSettingOpen={setIsSettingOpen}
+                            setters={[sessionVal, setSessionVal, setBreakVal, setIsSettingOpen]}
+                            state={[breakVal]}
                         />
                     )}
                     {taskSelected && (
                         <>
                             <TimerCountDown options={[mode, time]} isCounting={isCounting} />
                             <TimerControl
-                                startTimer={startTimer}
-                                cancelBreak={cancelBreak}
-                                mode={mode}
-                                isTimerActive={isTimerActive}
-                                setIsReseting={setIsReseting}
-                                isCounting={isCounting}
+                                setters={[setIsCounting, setIsReseting, setTime, setMode]}
+                                state={[mode, isTimerActive, isCounting, sessionVal]}
+                                timerHasStarted={timerHasStarted}
+                                audio={audio}
                             />
 
                             {isReseting && (
                                 <TimerModal
-                                    btnText="reset"
+                                    btnText="Reset timer."
                                     actionModal={() => resetTimer()}
                                     closeModal={() => setIsReseting(false)}
                                 />
                             )}
                             {isCompleted && (
                                 <TimerModal
-                                    btnText="Yes, mark it as complete"
+                                    btnText="Mark task as completed."
                                     actionModal={markAsComplete}
                                     closeModal={() => setIsCompleted(false)}
                                 />

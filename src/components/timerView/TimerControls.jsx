@@ -4,37 +4,47 @@ import PropTypes from 'prop-types';
 // Components
 import { Button } from '../layout/Inputs';
 
-const TimerControl = ({
-    isCounting,
-    setIsReseting,
-    mode,
-    cancelBreak,
-    startTimer,
-    isTimerActive
-}) => {
+const TimerControl = ({ state, setters, audio, timerHasStarted }) => {
+    const [setIsCounting, setIsReseting, setTime, setMode] = setters;
+    const [mode, isTimerActive, isCounting, sessionVal] = state;
+
+    const timer = {
+        sessionPending: mode === 'session',
+        sessionStarted: mode === 'session' && isCounting === true,
+        breakPending: mode === 'break' && isCounting === false,
+        breakStarted: mode === 'break' && isCounting === true
+    };
+
+    const cancelBreak = () => {
+        setMode('session');
+        setTime(sessionVal * 60 * 1000);
+    };
+
+    const startTimer = () => {
+        setIsCounting(!isCounting);
+        timerHasStarted();
+        audio.pause();
+        audio.currentTime = 0;
+    };
+
+    let btnTile = `${isCounting ? 'pause' : isTimerActive ? 'resume' : 'start'}`;
+
+    const resetTimer = () => setIsReseting(true);
+
     return (
         <div className={`timer-control ${!isCounting ? 'not-active' : null}`}>
             <div className="timer-control--container">
-                {mode === 'session' && (
-                    <Button
-                        type={'btn-yellow'}
-                        s
-                        title={`${isCounting ? 'pause' : isTimerActive ? 'resume' : 'start'}`}
-                        onClick={startTimer}
-                    />
+                {timer.sessionPending && (
+                    <Button type={'btn-yellow'} title={btnTile} onClick={startTimer} />
                 )}
-                {mode === 'break' && isCounting === false && (
+                {timer.sessionStarted && (
+                    <Button title="reset timer" type="btn-cancel" onClick={resetTimer} />
+                )}
+                {timer.breakPending && (
                     <Button type={'btn-red'} title="start break" onClick={startTimer} />
                 )}
-                {mode === 'break' && isCounting === true && (
+                {timer.breakStarted && (
                     <Button title="cancel break" type="btn-red" onClick={cancelBreak} />
-                )}
-                {mode === 'session' && isCounting === true && (
-                    <Button
-                        title="reset timer"
-                        type="btn-cancel"
-                        onClick={() => setIsReseting(true)}
-                    />
                 )}
             </div>
         </div>

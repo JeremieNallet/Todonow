@@ -20,15 +20,15 @@ body {
 }
 
 html {
-    font-size: 62.5%;
+    font-size: 59%;
     @include media(xl) {
         font-size: 77%;
     }
     @include media(l-global) {
-        font-size: 56%;
+        font-size: 54%;
     }
     @include media(l) {
-        font-size: 54%;
+        font-size: 50%;
     }
 }
 

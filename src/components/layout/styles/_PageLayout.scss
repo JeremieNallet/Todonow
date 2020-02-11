@@ -14,7 +14,7 @@ $left-margin: 26rem;
         padding: 10rem $right-margin / 1.6 0 $left-margin / 2.2;
     }
     @include media(s) {
-        padding: 10rem $right-margin / 9 0 $left-margin / 15;
+        padding: 10rem $right-margin / 4 0 $left-margin / 15;
     }
 
     &__header {
@@ -50,6 +50,7 @@ $left-margin: 26rem;
             padding-left: $gutter;
             @include media(m) {
                 order: 1;
+                -ms-order: 1;
                 padding: 0;
             }
         }

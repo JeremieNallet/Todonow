@@ -13,7 +13,8 @@ export const Input = ({
     error,
     errorClass,
     passwordClass,
-    className
+    className,
+    forwardRef
 }) => {
     return (
         <div className="input">
@@ -24,6 +25,7 @@ export const Input = ({
                 value={value}
                 placeholder={placeholder}
                 onChange={onChange}
+                ref={forwardRef}
             />
 
             <label className="input__label">{label}</label>

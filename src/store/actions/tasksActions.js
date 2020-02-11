@@ -95,7 +95,7 @@ export const addOneTask = data => async (dispatch, getState, { getFirestore }) =
         dispatch({ type: actionType.TASK_ADD_SUCCESS });
         return true;
     } catch (err) {
-        console.error(err);
+        // console.error(err);
         dispatch({ type: actionType.TASK_ADD_FAIL });
     }
 };
@@ -224,5 +224,7 @@ export const markTaskComplete = id => async (dispatch, getState, { getFirestore 
             .collection('tasks')
             .doc(userId)
             .update({ task });
-    } catch (err) {}
+    } catch (err) {
+        console.log(err);
+    }
 };

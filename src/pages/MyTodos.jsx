@@ -8,14 +8,11 @@ import ScreenModal from '../components/layout/ScreenModal';
 
 // Store
 import { connect } from 'react-redux';
-import {
-    deleteAllCompletedTasks,
-    deleteAllCompleted_local
-} from '../store/actions/tasksActions';
+import { deleteAllCompletedTasks, deleteAllCompleted_local } from '../store/actions/tasksActions';
 
 import { toggleModal } from '../store/actions/UIActions';
 
-const TasksList = ({
+const MyTasks = ({
     isModalOpen,
     toggleModal,
     deleteAllCompletedTasks,
@@ -31,7 +28,6 @@ const TasksList = ({
         } else {
             deleteAllCompletedTasks();
         }
-
         toggleModal();
     };
     return (
@@ -55,7 +51,7 @@ const TasksList = ({
     );
 };
 
-TasksList.propTypes = {
+MyTasks.propTypes = {
     isModalOpen: PropTypes.bool,
     toggleModal: PropTypes.func,
     deleteAllCompletedTasks: PropTypes.func
@@ -72,4 +68,4 @@ const mapDispatchToProps = {
     deleteAllCompleted_local
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TasksList);
+export default connect(mapStateToProps, mapDispatchToProps)(MyTasks);

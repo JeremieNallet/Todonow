@@ -5,9 +5,9 @@ import moment from 'moment';
 //Components
 import { RangeInput, Button } from '../layout/Inputs';
 
-const TimerSettings = ({ sessionSetting, breakSettings, setIsSettingOpen }) => {
-    const [sessionVal, setSessionVal] = sessionSetting;
-    const [breakVal, setBreakVal] = breakSettings;
+const TimerSettings = ({ state, setters }) => {
+    const [breakVal] = state;
+    const [sessionVal, setSessionVal, setBreakVal, setIsSettingOpen] = setters;
 
     const [savedSession, setSaveSession] = useState(sessionVal);
     const [savedBreak, setSavedBreak] = useState(breakVal);
