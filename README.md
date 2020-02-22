@@ -1,5 +1,5 @@
 Simple task management application based on the pomodoro technique, with authentication. The user
-can add, edit, and delete task and set a customizable timer for any chosen task.
+can add, edit, and delete task and set a customizable timer for any chosen task. here is a [live preview 🌍](https://adoring-williams-daea71.netlify.com/)
 
 ![Thumbnail](p1.png) ![Thumbnail2](p2.png)
 
